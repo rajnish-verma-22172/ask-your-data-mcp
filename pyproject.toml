@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ask-your-data-mcp"
+version = "0.1.0"
+description = "A Streamable HTTP MCP server for querying CSV data and answering questions with Amazon Bedrock."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = [
+    "boto3>=1.39.0",
+    "mcp>=1.9.0,<2",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0"]
+
+[project.scripts]
+ask-your-data-mcp = "ask_your_data_mcp.server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
