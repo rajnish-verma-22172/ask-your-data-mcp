@@ -4,6 +4,8 @@ An Alexa+ track prototype: a Streamable HTTP MCP server that loads CSV text,
 filters and aggregates it, and can use Amazon Bedrock to turn query results into
 a concise answer suitable for speech.
 
+**Demo video (2:45):** https://youtu.be/7BZU_YJn_fE
+
 ## Hackathon scope
 
 - **Primary track:** Alexa+ — self-hosted MCP server implementing MCP spec
