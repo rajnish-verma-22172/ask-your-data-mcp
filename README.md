@@ -6,9 +6,14 @@ a concise answer suitable for speech.
 
 ## Hackathon scope
 
-- **Primary track:** Alexa+ — working MCP integration over Streamable HTTP.
-- **Mini-challenges targeted:** AWS Builder (Amazon Bedrock integration) and
-  Open Source (MIT-licensed public project).
+- **Primary track:** Alexa+ — self-hosted MCP server implementing MCP spec
+  **2025-11-25** over Streamable HTTP (MCP Python SDK 1.30+; the version is
+  negotiated during the client handshake).
+- **Mini-challenges targeted:** AWS Builder (Amazon Bedrock Converse API
+  integration in [`bedrock.py`](src/ask_your_data_mcp/bedrock.py)) and Open
+  Source (MIT-licensed public project created during the hackathon window).
+- Friction encountered during the build is documented in
+  [FRICTION_LOG.md](FRICTION_LOG.md).
 - The hackathon's [official resources page](https://amazonappdev2026.devpost.com/resources)
   says Alexa+ projects should use open standards for Agent Skills and Streamable
   HTTP transports. It also describes AWS Builder as an integration of AWS
@@ -36,6 +41,34 @@ ask-your-data-mcp
 The MCP server uses Streamable HTTP and listens locally on the MCP SDK's default
 address (typically `http://127.0.0.1:8000/mcp`). Keep it bound to localhost
 unless you deliberately configure and secure a remote deployment.
+
+## Connect a client
+
+Any MCP client that supports Streamable HTTP can connect to
+`http://127.0.0.1:8000/mcp`.
+
+**MCP Inspector** (browse tools and call them by hand):
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+
+Choose the **Streamable HTTP** transport, enter `http://127.0.0.1:8000/mcp`,
+click **Connect**, then open the **Tools** tab.
+
+**VS Code (GitHub Copilot agent mode)** — add `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "ask-your-data": { "type": "http", "url": "http://127.0.0.1:8000/mcp" }
+  }
+}
+```
+
+Then ask, for example: *"Load data/sample-expenses.csv into ask-your-data and
+tell me where most of my money went."* The agent calls `load_dataset`, then
+`query` (group by `category`, sum `amount`), then `answer_with_bedrock`.
 
 ## Configure Bedrock
 
@@ -112,5 +145,9 @@ python -m pytest
 
 - One in-memory dataset is shared by all clients connected to this server.
 - CSV must be supplied as tool input; no arbitrary local file paths are exposed.
-- The web-based Alexa+ simulator, richer spreadsheet support, and recorded
-  product feedback/demo submission materials remain follow-up work.
+- Bedrock answers need an AWS account with Bedrock inference enabled. The
+  hackathon account used for development was blocked by AWS (see
+  [FRICTION_LOG.md](FRICTION_LOG.md)), so the demo shows the deterministic
+  fallback answer.
+- A web-based Alexa+ simulator and richer spreadsheet formats (XLSX, Google
+  Sheets, S3) are follow-up work.
